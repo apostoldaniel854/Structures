@@ -1,0 +1,63 @@
+struct RMQ_MAX
+{
+        vector<vector<int>>ret;
+        vector<int>mylog;
+        void build(int n,int a[])
+        {
+                ret.resize(n+1);
+                mylog.resize(n+1);
+                for(int i=2;i<=n;i++)
+                {
+                        mylog[i]=1+mylog[i/2];
+                }
+                for(int i=1;i<=n;i++)
+                {
+                        ret[i].resize(mylog[n]+1,-(1<<30));
+                        ret[i][0]=a[i];
+                }
+                for(int k=1;(1<<k)<=n;k++)
+                {
+                        for(int i=1;i+(1<<k)-1<=n;i++)
+                        {
+                                ret[i][k]=max(ret[i][k-1],ret[i+(1<<(k-1))][k-1]);
+                        }
+                }
+        }
+        int ask(int l,int r)
+        {
+                int k=mylog[r-l+1];
+                return max(ret[l][k],ret[r-(1<<k)+1][k]);
+        }
+};
+ 
+struct RMQ_MIN
+{
+        vector<vector<int>>ret;
+        vector<int>mylog;
+        void build(int n,int a[])
+        {
+                ret.resize(n+1);
+                mylog.resize(n+1);
+                for(int i=2;i<=n;i++)
+                {
+                        mylog[i]=1+mylog[i/2];
+                }
+                for(int i=1;i<=n;i++)
+                {
+                        ret[i].resize(mylog[n]+1,(1<<30));
+                        ret[i][0]=a[i];
+                }
+                for(int k=1;(1<<k)<=n;k++)
+                {
+                        for(int i=1;i+(1<<k)-1<=n;i++)
+                        {
+                                ret[i][k]=min(ret[i][k-1],ret[i+(1<<(k-1))][k-1]);
+                        }
+                }
+        }
+        int ask(int l,int r)
+        {
+                int k=mylog[r-l+1];
+                return min(ret[l][k],ret[r-(1<<k)+1][k]);
+        }
+};
