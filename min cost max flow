@@ -1,0 +1,101 @@
+
+struct Graph
+{
+    struct Edge {
+      int from, to, cost, flow;
+    };
+    vector <Edge> edges;
+    vector <int> adia[360]; /// this can be changed of course
+    vector <int> dist;
+    int S, D, n;
+ 
+    void bellan_ford()
+    {
+        vector <bool> in_queue(n, 0);
+        queue <int> q;
+        q.push(S);
+        in_queue[S] = 1;
+        dist[S] = 0;
+ 
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            in_queue[x] = 0;
+            for (auto i : adia[x]) {
+                if (edges[i].flow && dist[edges[i].to] > dist[x] + edges[i].cost) {
+                    dist[edges[i].to] = dist[x] + edges[i].cost;
+                    if (!in_queue[edges[i].to]) {
+                        in_queue[edges[i].to] = 1;
+                        q.push(edges[i].to);
+                    }
+                }
+            }
+        }
+    }
+    int recursive_mincost(int nod)
+    {
+        if (dist[nod] != 1e9)
+            return dist[nod];
+ 
+        for (auto i : adia[nod])
+            if (edges[i].flow)
+                dist[nod] = min(dist[nod], edges[i ^ 1].cost + recursive_mincost(edges[i].from));
+    }
+ 
+    bool dijkstra(vector <int> & tata)
+    {
+        tata = vector <int> (n, -1);
+        vector <int> cost(n, 1e9);
+        priority_queue <pair <int, int>> q;
+        cost[S] = 0;
+        q.push({ 0, S });
+        while (!q.empty()) {
+            int x = q.top().second;
+            if (q.top().first != -cost[x]) {
+                q.pop();
+                continue;
+            }
+            q.pop();
+            for (auto i : adia[x]) {
+                if (edges[i].flow && cost[edges[i].to] >
+                  cost[x] + dist[x] - dist[edges[i].to] + edges[i].cost) {
+                    cost[edges[i].to] = cost[x] + dist[x] - dist[edges[i].to] + edges[i].cost;
+                    q.push({ -cost[edges[i].to], edges[i].to });
+                    tata[edges[i].to] = i;
+                }
+            }
+        }
+        for (int i(0); i < n; i++)
+            dist[i] += cost[i];
+        return (tata[D] != -1);
+    }
+ 
+    void add_edge(Edge x)
+    {
+        adia[x.from].push_back(edges.size());
+        edges.push_back(x);
+        adia[x.to].push_back(edges.size());
+        edges.push_back({ x.to, x.from, -x.cost, 0 });
+    }
+ 
+    pair <int, int> min_cost_max_flow()
+    {
+        dist = vector <int> (n, 1e9);
+        bellan_ford();
+        //recursive_mincost(D);
+        int cost(0), flow(0);
+        vector <int> tata;
+        while (dijkstra(tata)) {
+            int minim(1e9);
+            for (int i(tata[D]); i != -1; i = tata[edges[i].from])
+                minim = min(minim, edges[i].flow);
+            for (int i(tata[D]); i != -1; i = tata[edges[i].from]) {
+                cost += minim * edges[i].cost;
+                edges[i].flow -= minim;
+                edges[i ^ 1].flow += minim;
+            }
+        }
+        return { flow, cost };
+    }
+ 
+};
