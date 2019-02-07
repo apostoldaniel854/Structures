@@ -1,0 +1,37 @@
+struct UF
+{
+        vector<int>t;
+        void build(int n)
+        {
+                t.resize(n+1);
+                for(int i=1;i<=n;i++)
+                {
+                        t[i]=i;
+                }
+        }
+        int dad(int a)
+        {
+                if(a==t[a])
+                {
+                        return a;
+                }
+                else
+                {
+                        t[a]=dad(t[a]);
+                        return t[a];
+                }
+        }
+        void uni(int a,int b)
+        {
+                a=dad(a);
+                b=dad(b);
+                if(a!=b)
+                {
+                        t[a]=b;
+                }
+        }
+        bool same(int a,int b)
+        {
+                return (dad(a)==dad(b));
+        }
+};
