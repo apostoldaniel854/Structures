@@ -1,0 +1,19 @@
+
+#define ll long long
+const int MOD = 1e9 + 7; /// change here
+
+ll pw(ll a, ll b) {
+	ll ans = 1; while (b) {
+		while (!(b & 1)) b >>= 1, a = (a * a) % MOD;
+		ans = (ans * a) % MOD, --b;
+	} return ans;
+}
+
+ll gcd (ll a, ll b) {
+  while (b > 0) {
+    ll r = a % b;
+    a = b;
+    b = r;
+  }
+  return a;
+}
