@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long double ld;
+typedef long long ll;
+
+#define eprintf(...) fprintf(stderr, __VA_ARGS__), fflush(stderr)
+
+#define sz(x) ((int) (x).size())
+#define pb(x) push_back (x);
+
+mt19937 mrand(chrono::steady_clock::now().time_since_epoch().count());
+
+int rnd(int x) {
+  return mrand() % x;
+}
+
+void precalc() {
+}
+
+void read() {
+}
+
+void solve() {
+}
+
+int main() {
+  precalc();
+  read();
+  solve();
+  return 0;
+}
